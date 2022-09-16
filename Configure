@@ -681,7 +681,7 @@ case $LSOF_TGT in	# {
 
 	  rm -f ${LSOF_TMPC}.*
 	  echo "#include <sys/systemcfg.h>" > ${LSOF_TMPC}.c
-	  echo 'main(){ if (__KERNEL_32()) printf("32\\n");' >> ${LSOF_TMPC}.c
+	  echo 'int main(){ if (__KERNEL_32()) printf("32\\n");' >> ${LSOF_TMPC}.c
 	  echo 'else if (__KERNEL_64()) printf("64\\n");' >> ${LSOF_TMPC}.c
 	  echo 'else printf("0\\n");' >> ${LSOF_TMPC}.c
 	  echo "return(0); }" >> ${LSOF_TMPC}.c
@@ -778,7 +778,7 @@ case $LSOF_TGT in	# {
 	  rm -f ${LSOF_TMPC}.*
 	  echo "#include <stddef.h>" > ${LSOF_TMPC}.c
 	  echo "#include <sys/user.h>" >> ${LSOF_TMPC}.c
-	  echo "main(){exit((offsetof(struct user, U_irss) & 0x7) ? 1 : 0);}" >>${LSOF_TMPC}.c
+	  echo "int main(){exit((offsetof(struct user, U_irss) & 0x7) ? 1 : 0);}" >>${LSOF_TMPC}.c
 	  echo "Testing user.h with $LSOF_CC"
 	  $LSOF_CC ${LSOF_TMPC}.c -o ${LSOF_TMPC}.x
 	  if ! ${LSOF_TMPC}.x	# {
@@ -811,7 +811,7 @@ case $LSOF_TGT in	# {
       # Get xlc version number
 
       rm -f ${LSOF_TMPC}.*
-      echo "main(){}" > ${LSOF_TMPC}.c
+      echo "int main(){}" > ${LSOF_TMPC}.c
       echo "Getting version number of ${LSOF_CC}."
       $LSOF_CC -c ${LSOF_TMPC}.c -I${LSOF_INCLUDE} -o ${LSOF_TMPC}.o -qlist > /dev/null 2>&1
       LSOF_CCV=`head -1 ${LSOF_TMPC}.lst | sed 's/\(.*\) ---.*/\1/'`
@@ -1493,71 +1493,88 @@ kernel generation process.
 	echo "!!!WARNING!!!  Configuring for FreeBSD 6.0"
 	;;
       7.0*)
+	LSOF_CFGL="$LSOF_CFGL -lutil"
 	LSOF_TSTBIGF=" "
 	LSOF_VERS=7000
 	;;
       7.1*)
+	LSOF_CFGL="$LSOF_CFGL -lutil"
 	LSOF_TSTBIGF=" "
 	LSOF_VERS=7010
 	;;
       7.2*)
+	LSOF_CFGL="$LSOF_CFGL -lutil"
 	LSOF_TSTBIGF=" "
 	LSOF_VERS=7020
 	;;
       7.3*)
+	LSOF_CFGL="$LSOF_CFGL -lutil"
 	LSOF_TSTBIGF=" "
 	LSOF_VERS=7030
 	;;
       7.4*)
+	LSOF_CFGL="$LSOF_CFGL -lutil"
 	LSOF_TSTBIGF=" "
 	LSOF_VERS=7040
 	;;
       7*)
+	LSOF_CFGL="$LSOF_CFGL -lutil"
 	LSOF_VERS=7000
 	echo "!!!WARNING!!!  Unsupported FreeBSD version: $LSOF_VSTR"
 	echo "!!!WARNING!!!  Configuring for FreeBSD 7.0"
 	;;
       8.0*)
+	LSOF_CFGL="$LSOF_CFGL -lutil"
 	LSOF_TSTBIGF=" "
 	LSOF_VERS=8000
 	;;
       8.1*)
+	LSOF_CFGL="$LSOF_CFGL -lutil"
 	LSOF_TSTBIGF=" "
 	LSOF_VERS=8010
 	;;
       8.2*)
+	LSOF_CFGL="$LSOF_CFGL -lutil"
 	LSOF_TSTBIGF=" "
 	LSOF_VERS=8020
 	;;
       8.3*)
+	LSOF_CFGL="$LSOF_CFGL -lutil"
 	LSOF_TSTBIGF=" "
 	LSOF_VERS=8030
 	;;
       8.4*)
+	LSOF_CFGL="$LSOF_CFGL -lutil"
 	LSOF_TSTBIGF=" "
 	LSOF_VERS=8040
 	;;
       9*)
+	LSOF_CFGL="$LSOF_CFGL -lutil"
 	LSOF_TSTBIGF=" "
 	LSOF_VERS=9000
 	;;
       10*)
+	LSOF_CFGL="$LSOF_CFGL -lutil"
 	LSOF_TSTBIGF=" "
 	LSOF_VERS=10000
 	;;
       11*)
+	LSOF_CFGL="$LSOF_CFGL -lutil"
 	LSOF_TSTBIGF=" "
 	LSOF_VERS=11000
 	;;
       12*)
+	LSOF_CFGL="$LSOF_CFGL -lutil"
 	LSOF_TSTBIGF=" "
 	LSOF_VERS=12000
 	;;
       13*)
+	LSOF_CFGL="$LSOF_CFGL -lutil"
 	LSOF_TSTBIGF=" "
 	LSOF_VERS=13000
 	;;
       14*)
+	LSOF_CFGL="$LSOF_CFGL -lutil"
 	LSOF_TSTBIGF=" "
 	LSOF_VERS=14000
 	;;
@@ -1648,27 +1665,15 @@ kernel generation process.
       fi	# }
     fi	# }
 
-    # Check the C library for closefrom and dup2.
-
-      if test -r /usr/lib/libc.a	# {
-      then
-	nm /usr/lib/libc.a | grep -q "W dup2"
-	if test $? -eq 0	# {
-	then
-	  LSOF_CFGF="$LSOF_CFGF -DHAS_DUP2"
-	fi	# }
-	nm /usr/lib/libc.a | grep -q "W closefrom"
-	if test $? -eq 0	# {
-	then
-	  LSOF_CFGF="$LSOF_CFGF -DHAS_CLOSEFROM"
-	fi	# }
-      fi	# }
+    # All supported FreeBSD releases have closefrom and dup2.
+    LSOF_CFGF="$LSOF_CFGF -DHAS_DUP2"
+    LSOF_CFGF="$LSOF_CFGF -DHAS_CLOSEFROM"
 
     # Do FreeBSD version-specific stuff.
 
     case $LSOF_VERS in	# {
     1000)
-      LSOF_CFGF="$LSOF_CFGF -DHASPROCFS"
+      LSOF_CFGF="$LSOF_CFGF"
       LSOF_CFGL="$LSOF_CFGL -lutil"
       LSOF_DINC="$LSOF_DINC -I`pwd`/dialects/freebsd/include"
       if test "X$FREEBSD_KERNEL" = "X"	# {
@@ -1783,7 +1788,7 @@ kernel generation process.
 	  cat > ${LSOF_TMPC}.c << .LSOF_END_HERE_DOC3
 #undef _KERNEL
 #include <sys/types.h>
-main() {
+int main() {
 cpumask_t c;
 }
 .LSOF_END_HERE_DOC3
@@ -2215,19 +2220,11 @@ LOCKF_OWNER4
     else
       LSOF_TMP1="miscfs"
     fi	# }
-    if test $LSOF_VERS -lt 5000	# {
-      then
-      if test -d ${FREEBSD_SYS}/${LSOF_TMP1}/procfs	# {
-      then
-	LSOF_CFGF="$LSOF_CFGF -DHASPROCFS"
-	LSOF_DINC_ADD=1
-      fi	# }
-    else
-      if test -d ${FREEBSD_SYS}/${LSOF_TMP1}/pseudofs	# {
-      then
-	LSOF_CFGF="$LSOF_CFGF -DHASPSEUDOFS"
-	LSOF_DINC_ADD=1
-      fi	# }
+    LSOF_CFGF="$LSOF_CFGF -DHASPROCFS"
+    if test -d ${FREEBSD_SYS}/${LSOF_TMP1}/pseudofs	# {
+    then
+      LSOF_CFGF="$LSOF_CFGF -DHASPSEUDOFS"
+      LSOF_DINC_ADD=1
     fi	# }
     if test -r ${LSOF_INCLUDE}/${LSOF_TMP1}/nullfs/null.h	# {
     then
@@ -2305,6 +2302,36 @@ LOCKF_OWNER4
     then
       LSOF_CFGF="$LSOF_CFGF -DHASUTMPX"
     fi	# }
+
+    # Does struct xtcpcb have t_maxseg?
+    rm -f ${LSOF_TMPC}.*
+    cat > ${LSOF_TMPC}.c << .LSOF_END_HERE_DOC4
+#undef _KERNEL
+#include <sys/types.h>
+#include <sys/queue.h>
+#include <sys/socketvar.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netinet/in_pcb.h>
+#include <netinet/tcp_var.h>
+main() {
+struct xtcpcb pcb; pcb.t_maxseg = 0;
+}
+.LSOF_END_HERE_DOC4
+    $LSOF_CC ${LSOF_TMPC}.c -o ${LSOF_TMPC}.x > /dev/null 2>&1
+    if test $? -eq 0	# {
+    then
+      LSOF_CFGF="$LSOF_CFGF -DHAS_XTCPCB_TMAXSEG"
+    fi	# }
+    rm -f ${LSOF_TMPC}.*
+
+    # Does struct kinfo_file have kf_un.kf_sock.kf_sock_sendq?
+    grep -q kf_sock_sendq ${LSOF_INCLUDE}/sys/user.h
+    if test $? -eq 0	# {
+    then
+      LSOF_CFGF="$LSOF_CFGF -DHAS_KF_SOCK_SENDQ"
+    fi	# }
+
     LSOF_DIALECT_DIR=freebsd
     ;;
 
@@ -2400,7 +2427,7 @@ LOCKF_OWNER4
     # Test for "const void" support.
 
     rm -f ${LSOF_TMPC}.*
-    echo "main() { const void *x; return(0); }" >> $LSOF_TMPC.c
+    echo "int main() { const void *x; return(0); }" >> $LSOF_TMPC.c
     $LSOF_CC $LSOF_TMPC.c -o $LSOF_TMPC.x > /dev/null 2>&1
     if test $? -eq 0	# {
     then
@@ -2532,7 +2559,7 @@ LOCKF_OWNER4
 	      echo ""
 	      echo "Testing $LSOF_CC for 64 bit support"
 	      rm -f ${LSOF_TMPC}.*
-	      echo "main(){}" > ${LSOF_TMPC}.c
+	      echo "int main(){}" > ${LSOF_TMPC}.c
 	      LSOF_TMP1=""
 	      $LSOF_CC ${LSOF_TMPC}.c -o ${LSOF_TMPC}.x > /dev/null 2>&1
 	      if test $? -eq 0	# {
@@ -4605,7 +4632,7 @@ return(0); }
 	rm -f ${LSOF_TMPC}.*
 	echo "#define _KMEMUSER" > ${LSOF_TMPC}.c
 	echo "#include <sys/proc/prdata.h>" >> ${LSOF_TMPC}.c
-	echo "main(){" >> ${LSOF_TMPC}.c
+	echo "int main(){" >> ${LSOF_TMPC}.c
 	echo "enum prnodetype p=PR_GWINDOWS;}" >> ${LSOF_TMPC}.c
 	echo "Testing prdata.h for PR_GWINDOWS, using $LSOF_CC"
 	echo $LSOF_CC | grep gcc > /dev/null
@@ -4630,7 +4657,7 @@ return(0); }
 	rm -f ${LSOF_TMPC}.*
 	echo "#define _KMEMUSER" > ${LSOF_TMPC}.c
 	echo "#include <sys/proc/prdata.h>" >> ${LSOF_TMPC}.c
-	echo "main(){" >> ${LSOF_TMPC}.c
+	echo "int main(){" >> ${LSOF_TMPC}.c
 	echo "enum prnodetype p=PR_LDT;}" >> ${LSOF_TMPC}.c
 	echo "Testing prdata.h for PR_LDT, using $LSOF_CC"
 	echo $LSOF_CC | grep gcc > /dev/null
@@ -4675,7 +4702,7 @@ return(0); }
 
 	    echo "Testing $LSOF_CC for 64 bit support"
 	    rm -f ${LSOF_TMPC}.*
-	    echo "main(){}" > ${LSOF_TMPC}.c
+	    echo "int main(){}" > ${LSOF_TMPC}.c
 	    LSOF_TMP1=""
 
 	# First try gcc's -m64 option -- it's the most current possibility.
@@ -4695,7 +4722,7 @@ return(0); }
 
 	    # Try using the older -mcpu=v9 option with gcc instead of -m64.
 
-	      echo "main(){}" > ${LSOF_TMPC}.c
+	      echo "int main(){}" > ${LSOF_TMPC}.c
 	      $LSOF_CC ${LSOF_TMPC}.c -mcpu=v9 -o ${LSOF_TMPC}.x > /dev/null 2>&1
 	      if test $? -eq 0	# {
 	      then
@@ -4751,7 +4778,7 @@ return(0); }
 	      echo "Testing $LSOF_CC for 64 bit $LSOF_TMP2 support"
 	      rm -f ${LSOF_TMPC}.*
 	      LSOF_TMP3="-xarch=$LSOF_TMP1"
-	      echo "main(){}" > ${LSOF_TMPC}.c
+	      echo "int main(){}" > ${LSOF_TMPC}.c
 	      LSOF_TMP4=`$LSOF_CC ${LSOF_TMPC}.c $LSOF_TMP3 -o ${LSOF_TMPC}.x 2>&1`
 	      if test $? -eq 0	# {
 	      then
@@ -5003,7 +5030,7 @@ return(0); }
     then
       rm -f ${LSOF_TMPC}.*
       echo "#include <sys/vnode.h>" > ${LSOF_TMPC}.c
-      echo "main(){" >> ${LSOF_TMPC}.c
+      echo "int main(){" >> ${LSOF_TMPC}.c
       echo "enum vtype p=VSOCK;}" >> ${LSOF_TMPC}.c
       echo "Testing vnode.h for VSOCK, using $LSOF_CC"
       echo $LSOF_CC | grep gcc > /dev/null
@@ -5490,7 +5517,7 @@ fi	# }
 rm -f ${LSOF_TMPC}.*
 cat > $LSOF_TMPC.c << .LSOF_END_HERE_DOC2
 #include <time.h>
-main(){
+int main(){
   time_t cl;
   struct tm *ts;
   char bf[32];
