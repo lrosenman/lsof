@@ -298,7 +298,15 @@ int     open(const char *, int, ...);
 #define	vasprintf vasprintf_kernel_lsof
 #define	uintfptr_t	int
 #define	_SYS_LIBKERN_H_
+#if __FreeBSD_version > 1400066
+#define	tick_sbt 1
+#define	pause kernel_pause
 #include <sys/file.h>
+#undef	pause
+#undef	tick_sbt
+#else
+#include <sys/file.h>
+#endif
 
 /*
  * Attempt to remove the circumventions.
@@ -319,12 +327,7 @@ int     open(const char *, int, ...);
 #undef	_KERNEL
 #undef	KERNEL
 
-# if	defined(DTYPE_KQUEUE)
 #define	HASKQUEUE				/* has the kqueue file type */
-#define	_KERNEL
-#include <sys/eventvar.h>
-#undef	_KERNEL
-# endif	/* defined(DTYPE_KQUEUE) */
 
 struct vop_advlock_args { int dummy; };	/* to pacify lf_advlock() prototype */
 #undef	MALLOC_DECLARE
