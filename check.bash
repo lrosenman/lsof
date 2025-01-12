@@ -5,7 +5,7 @@ if [ $# = 0 ]; then
     exit 1
 fi
 
-if ! [ -d dialects/$1 ]; then
+if ! [ -d lib/dialects/$1 ]; then
     echo "No such dialect: $1" 1>&2
     exit 1
 fi
@@ -26,7 +26,7 @@ $lsof -v
 
 export CI=1
 
-tdir=dialects/${dialect}/tests
+tdir=lib/dialects/${dialect}/tests
 
 nfailed=0
 nsuccessful=0
@@ -63,7 +63,7 @@ run_one()
         s=ok
         nsuccessful=$((nsuccessful + 1))
         rm -f "$report"
-    elif [ "$s" = 2 ]; then
+    elif [ "$s" = 77 ]; then
         s=skipped
         nskipped=$((nskipped + 1))
         REPORTS_SKIPPED="${REPORTS_SKIPPED} ${report}"
@@ -86,7 +86,7 @@ done
 echo
 echo STARTING TEST '(' $dialect specific ')'
 echo =============================================================================
-for x in  dialects/${dialect}/tests/case-*.bash; do
+for x in lib/dialects/${dialect}/tests/case-*.bash; do
     run_one $x $tdir
 done
 

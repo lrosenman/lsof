@@ -134,6 +134,9 @@
 		4.96.3 September 16, 2022
 		4.96.4 October 18, 2022
 		4.96.5 December 26, 2022
+		4.97.0 January 17, 2023
+		4.98.0 January 22, 2023
+		4.99.0 November 10, 2023
 
 
 
@@ -153,8 +156,8 @@ been tested on:
 contains information on other ports.)
 
 If your favorite Unix dialect is not in the list, or if your version
-of it is more recent than the ones listed, please contact me at
-<abe@purdue.edu>.
+of it is more recent than the ones listed, please file a new issue at
+https://github.com/lsof-org/lsof.
 
 Version 3 of lsof was tested on:
 
@@ -451,8 +454,7 @@ VENDOR.
 At worst such a bug report will confuse the vendor; at best, the
 vendor will forward the bug report to me.
 
-Please send all bug reports, requests, etc. to me via email at
-<abe@purdue.edu>.
+Please send all bug reports, requests, etc. to https://github.com/lsof-org/lsof.
 
 
 The lsof-l Mailing List
@@ -1901,7 +1903,7 @@ Supplement	Regenerated the 4.04 distribution to correct a non-
 		possible.  PTX 4.4.4 requires clnt_create().
 
 4.41		February 27, 1999
-		Added FreeBSD 3.1 and and 4.0 support with help
+		Added FreeBSD 3.1 and 4.0 support with help
 		from Sheldon Hearn <axl@iafrica.com>, David O'Brien
 		<obrien@NUXI.com>, and John Polstra <jdp@polstra.com>.
 
@@ -4014,7 +4016,7 @@ Supplement	Regenerated the 4.04 distribution to correct a non-
 		a patch to 4.75.
 
 		Added support for Solaris 10 port and CTFS files.  The
-		CTFS support is imcomplete, because I don't know how
+		CTFS support is incomplete, because I don't know how
 		to get inode number, size and link count.  (There's
 		a new 00FAQ entry about that.)
 
@@ -4074,7 +4076,7 @@ Supplement	Regenerated the 4.04 distribution to correct a non-
 		PA-RISC HP-UX 11.23, based on a report from John
 		Orndorff <John.Orndorff@sungard.com>.  Found that
 		neither the HP bundled C compiler nor gcc would build
-		lsof, but the the HP unbundled ANSI C compiler would.
+		lsof, but the HP unbundled ANSI C compiler would.
 		Concluded that HP bundled C compiler can't handle
 		<gssapi/gssapi.h>.  Devised a work-around to gcc's
 		omission of the rpcent structure definition of
@@ -4598,7 +4600,7 @@ Supplement	Regenerated the 4.04 distribution to correct a non-
 		Made FreeBSD 9 adjustment.
 
 		Fixed a Linux bug that prevented the display of paths for
-		abstact UNIX sockets.  Masatake Yamato <yamato@redhat.com>
+		abstract UNIX sockets.  Masatake Yamato <yamato@redhat.com>
 		reported the bug and supplied a patch.
 
 		Added compensation for the removal of RPC header files from
@@ -4750,7 +4752,7 @@ Supplement	Regenerated the 4.04 distribution to correct a non-
 		file names.  Stephane Chazelas <stephane.chazelas@gmail.com>
 		reported the problem.
 
-		Added support for Linux RDMA and CRYPTO protocal names and UNIX
+		Added support for Linux RDMA and CRYPTO protocol names and UNIX
 		socket type with code from Masatake YAMATO <yamato@redhat.com>.
 
 		Fixed field output to insure that the field descriptor field is
@@ -4908,9 +4910,6 @@ Supplement	Regenerated the 4.04 distribution to correct a non-
 
 		Released lsof to GitHub with Purdue releases documented in
 		support/GitHub-release.
-
-Vic Abell <abe@purdue.edu>
-July 14, 2018
 
 
 4.92.1		May 6, 2019
@@ -5405,7 +5404,7 @@ July 14, 2018
 
 		[FreeBSD] configure: suggest variable to set if FreeBSD sys not 
         	found
-        	submitted by @emaste
+        	Submitted by @emaste
 
 
 		Updated 00FAQ with lookup to open files via mountpoint
@@ -5446,7 +5445,180 @@ July 14, 2018
 
 		[freebsd] add <sys/callout.h> for recent changes
 
-4.9?.?          ????????? ??, ????
+4.97.0		January 17, 2023
+
+		[decof/du/tru64] Remove support because the os is no longer
+		updated for more than 10 years
+
+
+		[openstep/nextstep] Remove support because the os is no longer
+		updated for more than 20 years
+
+
+		Add experimental build system based on Autotools (#270)
+
+
+		Fixed LTsock testing on darwin (#272)
+
+
+		Remove NEW and OLD folders (#6)
+
+
+		Fix FreeBSD testcases (#271)
+
+
+		Rewrite documentation and publish at https://lsof.readthedocs.io/
+
+4.98.0		January 22, 2023
+
+		Fix two potential null pointer access bug when gethostbyname2()
+		returns an empty address list
+
+
+		Add support for older automake versions (on e.g. CentOS 7)
+
+
+		Migrate testing scripts and programs to autotools
+
+
+		Extend CI to build on more Linux distros
+
+
+		[linux] Fix handling of empty command name, closing #246.
+		Add test from #246, where lsof returns stale command name when the
+		command name is empty. If getting command name failed, return
+		NULL instead of empty string
+
+
+		Add --with/without-libtirpc option to autotools-based build
+		system and automatically detect libtirpc by default
+
+
+		Add -H switch to print human readable size, e.g. 123.4K (#260)
+
+
+		[linux] Fix implicit declaration error when HASPTYEPT is undefined
+
+
+		Add support for musl libc-based Linux distros
+
+
+		Add --enable-security argument to configure to allow only the
+		root user to list all open files
+
+
+		Add --enable-no-sock-security argument to configure to allow
+		anyone to list anyone else's socket files when combined with
+		--enable-security
+
+
+		[linux] Always enable 64 bit off_t in configure.ac
+
+
+		[netbsd] Import patches from pkgsrc and port autotools-based build system to NetBSD
+
+
+		[netbsd] Fix lock status reading
+
+4.99.0		November 10, 2023
+
+		[netbsd] Get device number of tmpfs instead of reporting zero
+
+
+		[openbsd] Rewrite OpenBSD support because OpenBSD disallows
+		kernel memory access and lsof has to switch to user mode API.
+		Currently, most features are working, but file path reporting
+		and lock status are not working for lack of kernel support.
+		As a consequence, OpenBSD dialect is separated in a new folder.
+
+
+		[darwin] Remove /dev/kmem backend because it no longer exists on
+		current macOS releases. Use libproc backend instead.
+
+		
+		[linux] Do not hard-code fd numbers in epoll test, fixing tests
+		on Void Linux
+
+
+		[freebsd] Use kf_file_nlink if provided by kernel instead of
+		stat(). This commit requires kernel with
+		https://reviews.freebsd.org/D38169. It brings back the ability
+		to list deleted files via `lsof +L1`. Closes #264.
+
+
+		[linux] Add --with-selinux configure option.
+
+
+		[solaris] Re-introduce support for recent Solaris & OpenIndiana
+		releases.
+
+
+		[darwin] Display kern ctl info, learned from apple lsof version.
+
+
+		[linux] Improve performance by using closefrom(). Closes #281.
+
+
+		[aix] Fix compilation on AIX 7.2 and add autotools build system
+		support for AIX.
+
+		[aix] Suppress warnings properly on AIX version greater than
+		5.0. Closes #187.
+		
+		Introduce alpha version of liblsof which allows users to use
+		lsof functionality via C functions instead of spawning a
+		subprocess and parsing the output. This version may contain BUGs
+		and memory leaks, and the API may change before it stablizes.
+
+4.99.1		December  16, 2023
+
+		Fix compilation error when HASIPv6 is not defined. (@chenrui333)
+
+		Add configure option --disable-liblsof to disable installation
+		of liblsof. (@subnut, #300)
+
+		[freebsd] fix segfault from fs info (FreeBSD bug 267760)
+
+4.99.2		December  16, 2023
+
+		fix version file
+
+4.99.3		December  16, 2023
+
+		fix 00DIST file <space> -> tabs
+
+4.99.4		November 18, 2024
+
+		fix version parser for clang (lsof-org#305) (#306)
+
+		In lsof manapge: mention /etc/services for -P option (#309)
+
+		[freebsd] don't use kf_sock_inpcb on modern versions. In
+		FreeBSD 14 and after the generic internet protocol control
+		block and protocol specific (TCP) control block are the same
+		pointer.  The latter embeds the former. The kf_sock_inpcb is
+		planned for removal in FreeBSD 15.
+
+		[freebsd] Recognize FreeBSD 15
+
+		Fix typos in docs (#314)
+
+		[linux] Do not embed kernel version in CFLAGS (#314)
+
+		[linux] Linux 6.9 changed the pidfs appearence in procfs. Try
+		to maintain original output in lsof (#317)
+
+		[linux] closefrom_shim: Add optimized fallback for platforms
+		without closefrom or close_range (#316)
+
+		lib/misc.c: fix build against -std=c23 (`void (*)()`) changed
+		the meaning) (#327)
+
+4.9?.?		????????? ??, ????
+
+
+Vic Abell <abe@purdue.edu>
+July 14, 2018
 
 The lsof-org team at GitHub
 December 28, 2022
